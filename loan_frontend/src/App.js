@@ -24,7 +24,7 @@ function App() {
     <React.Fragment>
       <AppBar position="fixed" color="transparent">
         <Toolbar className={classes.toolbar}>
-          <img src="color_logo.svg" />
+          <img src="color_logo.svg" alt="LendingFront logo"/>
         </Toolbar>
       </AppBar>
       <div className={classes.offset} />

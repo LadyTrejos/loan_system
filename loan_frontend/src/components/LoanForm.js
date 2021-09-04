@@ -5,6 +5,8 @@ import Grid from "@material-ui/core/Grid";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
 
+const API = process.env.REACT_APP_API;
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -69,7 +71,7 @@ function LoanForm() {
 
     if ("businessName" in formValues) {
       temp.businessName =
-        formValues.businessName == "" ? "Enter your business name" : "";
+        formValues.businessName === "" ? "Enter your business name" : "";
     }
 
     if ("requestedAmount" in formValues) {
@@ -91,7 +93,16 @@ function LoanForm() {
     e.preventDefault();
 
     if (formIsValid()) {
-      alert("Successful application!");
+      fetch(`${API}/loan_decision`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      })
+        .then((res) => res.json())
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err));
     }
   }
 
@@ -121,7 +132,7 @@ function LoanForm() {
             type="number"
             fullWidth
             required
-            error={errors.taxId}
+            error={errors.taxId !== ""}
             helperText={errors.taxId}
             value={values.taxId}
             onChange={(e) => handleInputChange(e)}
@@ -139,7 +150,7 @@ function LoanForm() {
             color="secondary"
             fullWidth
             required
-            error={errors.businessName}
+            error={errors.businessName !== ""}
             helperText={errors.businessName}
             value={values.businessName}
             onChange={(e) => handleInputChange(e)}
@@ -155,13 +166,13 @@ function LoanForm() {
             type="number"
             fullWidth
             required
-            error={errors.requestedAmount}
+            error={errors.requestedAmount !== ""}
             helperText={errors.requestedAmount}
             value={values.requestedAmount}
             onChange={(e) => handleInputChange(e)}
             InputProps={{
               startAdornment:
-                values.requestedAmount != "" ? (
+                values.requestedAmount !== "" ? (
                   <InputAdornment position="start">$</InputAdornment>
                 ) : null,
               inputProps: { min: 0, step: 0.01 },
