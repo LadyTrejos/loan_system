@@ -1,0 +1,25 @@
+loan_backend/lsvenv/
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+loan_frontend/node_modules
+loan_frontend/.pnp
+loan_frontend/.pnp.js
+
+# testing
+loan_frontend/coverage
+
+# production
+loan_frontend/build
+
+# misc
+loan_frontend/.DS_Store
+loan_frontend/.env.local
+loan_frontend/.env.development.local
+loan_frontend/.env.test.local
+loan_frontend/.env.production.local
+
+loan_frontend/npm-debug.log*
+loan_frontend/yarn-debug.log*
+loan_frontend/yarn-error.log*
