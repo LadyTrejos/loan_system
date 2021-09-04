@@ -22,8 +22,86 @@ const useStyles = makeStyles((theme) => ({
 
 function LoanForm() {
   const classes = useStyles();
+  const [values, setValues] = useState({
+    taxId: "",
+    businessName: "",
+    requestedAmount: "",
+  });
+
+  const [errors, setErrors] = useState({
+    taxId: "",
+    businessName: "",
+    requestedAmount: "",
+  });
+
+  const formIsValid = (formValues = values) => {
+    validate();
+    const isValid =
+      formValues.taxId &&
+      formValues.businessName &&
+      formValues.requestedAmount &&
+      Object.values(errors).every((x) => x === "");
+
+    return isValid;
+  };
+
+  function handleInputChange(e) {
+    const { name, value } = e.target;
+
+    setValues({ ...values, [name]: value });
+    validate({ [name]: value });
+  }
+
+  function validate(formValues = values) {
+    var temp = { ...errors };
+
+    if ("taxId" in formValues) {
+      if (
+        formValues.taxId === "0" ||
+        formValues.taxId === "" ||
+        formValues.taxId.startsWith("-")
+      ) {
+        temp.taxId = "Please enter a valid tax ID";
+      } else {
+        temp.taxId = "";
+      }
+    }
+
+    if ("businessName" in formValues) {
+      temp.businessName =
+        formValues.businessName == "" ? "Enter your business name" : "";
+    }
+
+    if ("requestedAmount" in formValues) {
+      if (
+        formValues.requestedAmount === "0" ||
+        formValues.requestedAmount === "" ||
+        formValues.requestedAmount.startsWith("-")
+      ) {
+        temp.requestedAmount = "Enter the amount of money you need";
+      } else {
+        temp.requestedAmount = "";
+      }
+    }
+
+    setErrors({ ...temp });
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (formIsValid()) {
+      alert("Successful application!");
+    }
+  }
+
   return (
-    <form autoComplete="off" className={classes.root}>
+    <form
+      autoComplete="off"
+      className={classes.root}
+      onSubmit={handleSubmit}
+      noValidate
+    >
       <Grid
         container
         direction="row"
@@ -34,26 +112,60 @@ function LoanForm() {
           <h1 className={classes.title}>Apply now</h1>
         </Grid>
         <Grid item xs={10}>
-          <TextField id="tax-id" label="Tax Id" margin="dense" fullWidth />
+          <TextField
+            id="tax-id"
+            label="Tax Id"
+            name="taxId"
+            margin="dense"
+            color="secondary"
+            type="number"
+            fullWidth
+            required
+            error={errors.taxId}
+            helperText={errors.taxId}
+            value={values.taxId}
+            onChange={(e) => handleInputChange(e)}
+            InputProps={{
+              inputProps: { min: 0 },
+            }}
+          />
         </Grid>
         <Grid item xs={10}>
           <TextField
             id="business-name"
             label="Business Name"
+            name="businessName"
             margin="dense"
+            color="secondary"
             fullWidth
+            required
+            error={errors.businessName}
+            helperText={errors.businessName}
+            value={values.businessName}
+            onChange={(e) => handleInputChange(e)}
           />
         </Grid>
         <Grid item xs={10}>
           <TextField
             id="requested-amount"
             label="Requested Amount"
-            type="number"
+            name="requestedAmount"
             margin="dense"
+            color="secondary"
+            type="number"
             fullWidth
-            //   InputProps={{
-            //     startAdornment: state != null ? <InputAdornment position="start">$</InputAdornment> : null,
-            //   }}
+            required
+            error={errors.requestedAmount}
+            helperText={errors.requestedAmount}
+            value={values.requestedAmount}
+            onChange={(e) => handleInputChange(e)}
+            InputProps={{
+              startAdornment:
+                values.requestedAmount != "" ? (
+                  <InputAdornment position="start">$</InputAdornment>
+                ) : null,
+              inputProps: { min: 0, step: 0.01 },
+            }}
           />
         </Grid>
         <Grid item xs={10}>
@@ -63,6 +175,7 @@ function LoanForm() {
             fullWidth
             size="large"
             className={classes.button}
+            type="submit"
           >
             Apply
           </Button>
