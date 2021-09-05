@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function LoanDecision(props) {
-  const { onClose, open, decision } = props;
+  const { onClose, open, decision, businessName } = props;
   const classes = useStyles();
 
   function handleClose() {
@@ -58,9 +58,9 @@ function LoanDecision(props) {
           style={{ color: "#71be35" }}
         />
       );
-      result = "Your application has been approved!";
+      result = `${businessName}, your application has been approved!`
       message =
-        "We will communicate with you through the email you indicated in the form.";
+      `Congratulations ${businessName}! the loan will be funded to your account.`;
     } else if (decision === "Undecided") {
       icon = (
         <InfoTwoToneIcon
@@ -70,7 +70,7 @@ function LoanDecision(props) {
       );
       result = "Ops! We need more information to decide";
       message =
-        "We will communicate with you through the email you indicated in the form.";
+        "Please contact us at (212) 235-7378 to continue the process.";
     } else if (decision === "Declined") {
       icon = (
         <CancelTwoToneIcon

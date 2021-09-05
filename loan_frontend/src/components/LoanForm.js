@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from "@material-ui/core/Grid";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
@@ -27,6 +28,7 @@ function LoanForm() {
   const classes = useStyles();
   const [openDecision, setOpenDecision] = useState(false);
   const [decision, setDecision] = useState("");
+  const [disabled, setDisabled] = useState(false);
   const [values, setValues] = useState({
     taxId: "",
     businessName: "",
@@ -94,7 +96,7 @@ function LoanForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
+    setDisabled(true); 
     if (formIsValid()) {
       fetch(`${API}/loan_decision`, {
         method: "POST",
@@ -110,6 +112,7 @@ function LoanForm() {
         })
         .catch((err) => console.log(err));
     }
+    setDisabled(false);
   }
 
   return (
@@ -193,7 +196,9 @@ function LoanForm() {
               fullWidth
               size="large"
               className={classes.button}
+              disabled={disabled}
               type="submit"
+              startIcon={disabled ? <CircularProgress size="1rem"/> : null}
             >
               Apply
             </Button>
@@ -204,6 +209,7 @@ function LoanForm() {
         open={openDecision}
         onClose={setOpenDecision}
         decision={decision}
+        businessName={values.businessName}
       />
     </React.Fragment>
   );
