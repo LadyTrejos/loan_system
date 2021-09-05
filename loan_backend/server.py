@@ -1,10 +1,10 @@
 from flask import Flask, request
 from flask_cors import CORS
 
-app = Flask(__name__, static_folder="../loan_frontend/build", static_url_path="/")
+app = Flask(__name__, static_folder="./../loan_frontend/build", static_url_path="/")
 CORS(app)
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return app.send_static_file('index.html')
 
@@ -17,8 +17,8 @@ def loan_decision():
         decision = "Approved"
     elif (requested_amount == 50000):
         decision = "Undecided"
-        
+
     return {"decision": decision}
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
