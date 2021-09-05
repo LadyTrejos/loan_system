@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
+import LoanDecision from "./LoanDecision";
 
 const API = process.env.REACT_APP_API;
 
@@ -24,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
 
 function LoanForm() {
   const classes = useStyles();
+  const [openDecision, setOpenDecision] = useState(false);
+  const [decision, setDecision] = useState("");
   const [values, setValues] = useState({
     taxId: "",
     businessName: "",
@@ -101,98 +104,108 @@ function LoanForm() {
         body: JSON.stringify(values),
       })
         .then((res) => res.json())
-        .then((data) => console.log(data))
+        .then((data) => {
+          setDecision(data.decision);
+          setOpenDecision(true);
+        })
         .catch((err) => console.log(err));
     }
   }
 
   return (
-    <form
-      autoComplete="off"
-      className={classes.root}
-      onSubmit={handleSubmit}
-      noValidate
-    >
-      <Grid
-        container
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
+    <React.Fragment>
+      <form
+        autoComplete="off"
+        className={classes.root}
+        onSubmit={handleSubmit}
+        noValidate
       >
-        <Grid item xs={10}>
-          <h1 className={classes.title}>Apply now</h1>
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Grid item xs={10}>
+            <h1 className={classes.title}>Apply now</h1>
+          </Grid>
+          <Grid item xs={10}>
+            <TextField
+              id="tax-id"
+              label="Tax Id"
+              name="taxId"
+              margin="dense"
+              color="secondary"
+              type="number"
+              fullWidth
+              required
+              error={errors.taxId !== ""}
+              helperText={errors.taxId}
+              value={values.taxId}
+              onChange={(e) => handleInputChange(e)}
+              InputProps={{
+                inputProps: { min: 0 },
+              }}
+            />
+          </Grid>
+          <Grid item xs={10}>
+            <TextField
+              id="business-name"
+              label="Business Name"
+              name="businessName"
+              margin="dense"
+              color="secondary"
+              fullWidth
+              required
+              error={errors.businessName !== ""}
+              helperText={errors.businessName}
+              value={values.businessName}
+              onChange={(e) => handleInputChange(e)}
+            />
+          </Grid>
+          <Grid item xs={10}>
+            <TextField
+              id="requested-amount"
+              label="Requested Amount"
+              name="requestedAmount"
+              margin="dense"
+              color="secondary"
+              type="number"
+              fullWidth
+              required
+              error={errors.requestedAmount !== ""}
+              helperText={errors.requestedAmount}
+              value={values.requestedAmount}
+              onChange={(e) => handleInputChange(e)}
+              InputProps={{
+                startAdornment:
+                  values.requestedAmount !== "" ? (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ) : null,
+                inputProps: { min: 0, step: 0.01 },
+              }}
+            />
+          </Grid>
+          <Grid item xs={10}>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              size="large"
+              className={classes.button}
+              type="submit"
+            >
+              Apply
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={10}>
-          <TextField
-            id="tax-id"
-            label="Tax Id"
-            name="taxId"
-            margin="dense"
-            color="secondary"
-            type="number"
-            fullWidth
-            required
-            error={errors.taxId !== ""}
-            helperText={errors.taxId}
-            value={values.taxId}
-            onChange={(e) => handleInputChange(e)}
-            InputProps={{
-              inputProps: { min: 0 },
-            }}
-          />
-        </Grid>
-        <Grid item xs={10}>
-          <TextField
-            id="business-name"
-            label="Business Name"
-            name="businessName"
-            margin="dense"
-            color="secondary"
-            fullWidth
-            required
-            error={errors.businessName !== ""}
-            helperText={errors.businessName}
-            value={values.businessName}
-            onChange={(e) => handleInputChange(e)}
-          />
-        </Grid>
-        <Grid item xs={10}>
-          <TextField
-            id="requested-amount"
-            label="Requested Amount"
-            name="requestedAmount"
-            margin="dense"
-            color="secondary"
-            type="number"
-            fullWidth
-            required
-            error={errors.requestedAmount !== ""}
-            helperText={errors.requestedAmount}
-            value={values.requestedAmount}
-            onChange={(e) => handleInputChange(e)}
-            InputProps={{
-              startAdornment:
-                values.requestedAmount !== "" ? (
-                  <InputAdornment position="start">$</InputAdornment>
-                ) : null,
-              inputProps: { min: 0, step: 0.01 },
-            }}
-          />
-        </Grid>
-        <Grid item xs={10}>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            size="large"
-            className={classes.button}
-            type="submit"
-          >
-            Apply
-          </Button>
-        </Grid>
-      </Grid>
-    </form>
+      </form>
+      <LoanDecision
+        open={openDecision}
+        onClose={setOpenDecision}
+        decision={decision}
+      />
+    </React.Fragment>
   );
 }
 
