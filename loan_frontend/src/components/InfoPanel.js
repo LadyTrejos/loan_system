@@ -9,12 +9,26 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     color: "#fff",
+    padding: "0 1.3rem",
     background: "linear-gradient(141deg,rgb(7 36 72) 47%,rgb(242 56 15) 164%)",
-    height: "100vh"
+    height: `calc(100vh - 56px)`,
+    [`${theme.breakpoints.up("xs")} and (orientation: landscape)`]: {
+      height: `calc(100vh - 48px)`,
+    },
+    [theme.breakpoints.up("sm")]: {
+      height: `calc(100vh - 64px)`,
+    },
   },
   primary: {
     color: theme.palette.primary.main,
   },
+  title: {
+    fontSize: "1.8rem",
+  },
+  text: {
+    fontSize: "1rem",
+    margin: 0
+  }
 }));
 
 function InfoPanel() {
@@ -23,15 +37,15 @@ function InfoPanel() {
   return (
     <div className={classes.root}>
       <React.Fragment>
-        <h1>
+        <h1 className={classes.title}>
           What's <span className={classes.primary}>LendingFront</span>?
         </h1>
-        <p>
+        <p className={classes.text}>
           LendingFront is a loan system designed for businesses that need fast
           access to capital.
         </p>
-        <h2>Why apply for a business loan?</h2>
-        <p>
+        <h3>Why apply for a business loan?</h3>
+        <p className={classes.text}>
           A business loan can help you make your next purchase, fund growth, or
           manage cash flow for your business.
           <br />
